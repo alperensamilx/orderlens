@@ -1,0 +1,94 @@
+{% extends 'analyzer/base.html' %}
+{% block title %}OrderLens - {{ dataset.name }}{% endblock %}
+{% block content %}
+    <p><a href="{% url 'analyzer:dataset_list' %}">&larr; Panelime dön</a> · <a href="{% url 'analyzer:map_columns' dataset.pk %}">Sütun eşlemesini düzenle</a></p>
+
+    <div class="card">
+        <h2>{{ dataset.name }}</h2>
+        <div class="stat-grid">
+            <div class="stat-box">
+                <div class="label">Toplam Gelir</div>
+                <div class="value">{{ metrics.total_revenue }}</div>
+            </div>
+            <div class="stat-box">
+                <div class="label">Sipariş Sayısı</div>
+                <div class="value">{{ metrics.order_count }}</div>
+            </div>
+            <div class="stat-box">
+                <div class="label">Ortalama Sepet Tutarı</div>
+                <div class="value">{{ metrics.aov }}</div>
+            </div>
+            {% if metrics.total_units %}
+                <div class="stat-box">
+                    <div class="label">Toplam Satılan Adet</div>
+                    <div class="value">{{ metrics.total_units }}</div>
+                </div>
+            {% endif %}
+            {% if metrics.unique_customers %}
+                <div class="stat-box">
+                    <div class="label">Benzersiz Müşteri</div>
+                    <div class="value">{{ metrics.unique_customers }}</div>
+                </div>
+                <div class="stat-box">
+                    <div class="label">Tekrar Eden Müşteri Oranı</div>
+                    <div class="value">%{{ metrics.repeat_customer_rate }}</div>
+                </div>
+            {% endif %}
+        </div>
+        <p class="muted kpi-note">
+            <strong>Ortalama Sepet Tutarı (AOV):</strong> Her siparişin ortalama ne kadarlık gelir getirdiği.
+            {% if metrics.repeat_customer_rate is not None %}
+                <strong>Tekrar Eden Müşteri Oranı:</strong> Birden fazla sipariş veren müşterilerin tüm müşterilere oranı — sadakat/elde tutma göstergesi.
+            {% endif %}
+        </p>
+    </div>
+
+    {% if revenue_trend_chart %}
+        <div class="card">
+            <h3>Zaman İçinde Gelir</h3>
+            <p class="muted">Satışların zaman içindeki seyrini gösterir. Yükselen/düşen trendler veya belirli dönemlerdeki ani artışlar (kampanya, sezon vb.) burada görülür.</p>
+            <img src="data:image/png;base64,{{ revenue_trend_chart }}" alt="Zaman içinde gelir grafiği" style="max-width:100%; border-radius:8px;">
+        </div>
+    {% endif %}
+
+    {% if top_products_chart %}
+        <div class="card">
+            <h3>En Çok Gelir Getiren Ürünler</h3>
+            <p class="muted">Hangi ürünlerin toplam gelire en çok katkı sağladığını gösterir — stok/pazarlama önceliklendirmesi için kullanışlı.</p>
+            <img src="data:image/png;base64,{{ top_products_chart }}" alt="En çok gelir getiren ürünler grafiği" style="max-width:100%; border-radius:8px;">
+        </div>
+    {% endif %}
+
+    {% if category_chart %}
+        <div class="card">
+            <h3>Kategoriye Göre Gelir Dağılımı</h3>
+            <p class="muted">Gelirin kategoriler arasında nasıl dağıldığını gösterir.</p>
+            <img src="data:image/png;base64,{{ category_chart }}" alt="Kategoriye göre gelir dağılımı" style="max-width:100%; border-radius:8px;">
+        </div>
+    {% endif %}
+
+    {% if status_chart %}
+        <div class="card">
+            <h3>Sipariş Durumu Dağılımı</h3>
+            <p class="muted">Siparişlerin ne kadarının tamamlandığını, iptal/iade edildiğini gösterir — yüksek iptal/iade oranı genelde bir sorunun işaretidir.</p>
+            <img src="data:image/png;base64,{{ status_chart }}" alt="Sipariş durumu dağılımı" style="max-width:100%; border-radius:8px;">
+        </div>
+    {% endif %}
+
+    {% if metrics.top_products %}
+        <div class="card">
+            <h3>En Çok Gelir Getiren İlk 10 Ürün (Tablo)</h3>
+            <table class="table">
+                <tr><th>Ürün</th><th>Gelir</th></tr>
+                {% for item in metrics.top_products %}
+                    <tr><td>{{ item.name }}</td><td>{{ item.revenue }}</td></tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% endif %}
+
+    <div class="card">
+        <h3>API</h3>
+        <p class="muted">Bu analiz JSON olarak da erişilebilir: <code>GET /api/datasets/{{ dataset.pk }}/stats/</code> (giriş yapmış olman gerekir).</p>
+    </div>
+{% endblock %}
