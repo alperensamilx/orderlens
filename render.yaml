@@ -17,7 +17,10 @@ services:
     # Celery worker runs as a background (daemonized) process inside the same web
     # dyno, alongside gunicorn. On a paid plan this should be split into its own
     # `type: worker` service instead (see docker-compose.yml for that setup).
-    startCommand: "celery -A datalens worker -l info --detach && gunicorn datalens.wsgi:application --bind 0.0.0.0:$PORT"
+    # --pool=solo --concurrency=1 avoids Celery forking extra worker processes
+    # (its default prefork pool spawns one per CPU) — the free instance only has
+    # 512MB total, shared with gunicorn, and was OOM-crashing without this.
+    startCommand: "celery -A datalens worker -l info --pool=solo --concurrency=1 --detach && gunicorn datalens.wsgi:application --bind 0.0.0.0:$PORT --workers 1 --threads 2"
     envVars:
       - key: DJANGO_SECRET_KEY
         generateValue: true
