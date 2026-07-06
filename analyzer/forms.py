@@ -11,7 +11,7 @@ class DatasetUploadForm(forms.Form):
     def clean_file(self):
         file = self.cleaned_data['file']
         if not file.name.lower().endswith('.csv'):
-            raise forms.ValidationError('Lütfen sadece .csv dosyası yükleyin.')
+            raise forms.ValidationError('Please upload a .csv file only.')
         return file
 
 
@@ -25,7 +25,7 @@ class ColumnMappingForm(forms.Form):
     def __init__(self, *args, columns, initial_mapping=None, **kwargs):
         super().__init__(*args, **kwargs)
         initial_mapping = initial_mapping or {}
-        choices = [('', '— Kullanma —')] + [(col, col) for col in columns]
+        choices = [('', '— Don\'t use —')] + [(col, col) for col in columns]
         for field in CANONICAL_FIELDS:
             self.fields[field] = forms.ChoiceField(
                 label=FIELD_LABELS[field],

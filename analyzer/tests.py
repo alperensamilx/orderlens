@@ -11,10 +11,10 @@ from .models import AnalysisResult, Dataset
 from .tasks import run_analysis
 
 ORDERS_CSV = b"""Order Date,Product,Category,Quantity,Total,Customer Email,Status
-2026-04-01,Kulaklik,Elektronik,1,100,a@example.com,Tamamlandi
-2026-04-02,Kulaklik,Elektronik,1,100,a@example.com,Tamamlandi
-2026-04-03,Saat,Elektronik,1,200,b@example.com,Tamamlandi
-2026-04-04,Ayakkabi,Giyim,1,150,c@example.com,Iptal
+2026-04-01,Headphones,Electronics,1,100,a@example.com,Completed
+2026-04-02,Headphones,Electronics,1,100,a@example.com,Completed
+2026-04-03,Watch,Electronics,1,200,b@example.com,Completed
+2026-04-04,Shoes,Clothing,1,150,c@example.com,Cancelled
 """
 
 
@@ -111,7 +111,7 @@ class EndToEndFlowTests(TestCase):
 
         response = self.client.get(reverse('analyzer:analyze', args=[dataset.pk]))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Toplam Gelir')
+        self.assertContains(response, 'Total Revenue')
         self.assertContains(response, '550')
 
         api_response = self.client.get(reverse('analyzer:api_dataset_stats', args=[dataset.pk]))
@@ -160,7 +160,7 @@ class AsyncAnalysisTests(TestCase):
     def test_analyze_shows_processing_page_before_task_runs(self):
         response = self.client.get(reverse('analyzer:analyze', args=[self.dataset.pk]))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'hazırlanıyor')
+        self.assertContains(response, 'Preparing')
 
     def test_api_returns_202_before_task_runs(self):
         response = self.client.get(reverse('analyzer:api_dataset_stats', args=[self.dataset.pk]))
@@ -175,7 +175,7 @@ class AsyncAnalysisTests(TestCase):
         self.assertIsNotNone(result.charts.get('revenue_trend'))
 
         response = self.client.get(reverse('analyzer:analyze', args=[self.dataset.pk]))
-        self.assertContains(response, 'Toplam Gelir')
+        self.assertContains(response, 'Total Revenue')
 
         api_response = self.client.get(reverse('analyzer:api_dataset_stats', args=[self.dataset.pk]))
         self.assertEqual(api_response.status_code, 200)

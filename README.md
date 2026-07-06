@@ -1,53 +1,53 @@
 # OrderLens
 
-E-ticaret satıcıları için sipariş CSV export'larını (Shopify, Etsy, WooCommerce, Trendyol vb.) birkaç adımda bir satış analiz panosuna çeviren bir Django uygulaması.
+A Django app that turns e-commerce order CSV exports (Shopify, Etsy, WooCommerce, Trendyol, etc.) into a sales analytics dashboard in a few steps.
 
-**Canlı demo:** [orderlens-xkef.onrender.com](https://orderlens-xkef.onrender.com) — `demo` / `demo1234` ile giriş yapıp önceden yüklenmiş örnek veriyi inceleyebilirsin. (Ücretsiz Render planı hareketsiz kalınca uykuya geçer, ilk istek ~30-50 saniye sürebilir.)
+**Live demo:** [orderlens-xkef.onrender.com](https://orderlens-xkef.onrender.com) — log in with `demo` / `demo1234` to explore pre-loaded sample data. (The free Render plan spins down when idle, so the first request may take ~30-50 seconds.)
 
-Küçük bir e-ticaret satıcısı genelde siparişlerini Excel/Google Sheets'te elle karıştırıp gelir, en çok satan ürün, tekrar eden müşteri gibi soruların cevabını arar. OrderLens bu CSV'yi yükleyip birkaç saniyede bu soruların cevabını, ilgili grafiklerle birlikte veriyor.
+A small e-commerce seller usually digs through Excel/Google Sheets by hand to answer questions like revenue, best-selling products, or repeat customers. OrderLens takes that CSV and answers those questions in a few seconds, with charts to match.
 
-## Özellikler
+## Features
 
-- **Sütun eşleme**: Farklı platformların farklı CSV başlıklarını (`Order Date`, `Total`, `tarih`, `tutar`...) varsaymak yerine, yüklenen dosyanın başlıklarını otomatik tahmin edip kullanıcıya onaylatan bir eşleme adımı.
-- **Asenkron analiz (Celery + Redis)**: Sütun eşlemesi kaydedildiğinde analiz arka planda bir Celery worker'da hesaplanır; kullanıcı bu sırada basit bir "hazırlanıyor" sayfası görür, sonuç `AnalysisResult` tablosunda önbelleklenir. Hem web sayfası hem API bu önbellekten okur — her istekte pandas'ı yeniden çalıştırmaz.
-- **KPI panosu**: Toplam gelir, sipariş sayısı, ortalama sepet tutarı (AOV), benzersiz müşteri sayısı, tekrar eden müşteri oranı.
-- **Grafikler**: Zaman içinde gelir trendi, en çok gelir getiren ürünler, kategoriye göre gelir dağılımı, sipariş durumu (tamamlandı/iptal/iade) dağılımı.
-- **REST API**: Aynı analiz verisi `GET /api/datasets/<id>/stats/` üzerinden JSON olarak da alınabilir (Django REST Framework); henüz hazır değilse `202 Accepted` döner. Otomatik OpenAPI/Swagger dokümantasyonu `/api/docs/` adresinde.
-- **Çok kullanıcılı**: Kayıt/giriş sistemi var, her satıcı sadece kendi yüklediği dosyaları görür.
-- **Docker + CI**: `docker-compose` ile web/worker/Postgres/Redis tek komutla ayağa kalkar; GitHub Actions her push'ta test suite'ini Postgres+Redis servisleriyle çalıştırır.
+- **Column mapping**: Instead of assuming every platform uses the same CSV headers (`Order Date`, `Total`, `date`, `amount`...), the uploaded file's headers are auto-detected and the user confirms the mapping in a dedicated step.
+- **Asynchronous analysis (Celery + Redis)**: Once column mapping is saved, the analysis is computed in the background by a Celery worker; the user sees a simple "processing" page in the meantime, and the result is cached in the `AnalysisResult` table. Both the web page and the API read from this cache — pandas isn't re-run on every request.
+- **KPI dashboard**: Total revenue, order count, average order value (AOV), unique customers, repeat customer rate.
+- **Charts**: Revenue trend over time, top revenue-generating products, revenue by category, order status (completed/cancelled/refunded) breakdown.
+- **REST API**: The same analytics are available as JSON via `GET /api/datasets/<id>/stats/` (Django REST Framework); returns `202 Accepted` if not ready yet. Auto-generated OpenAPI/Swagger docs at `/api/docs/`.
+- **Multi-user**: Sign-up/login system; each seller only sees the files they uploaded.
+- **Docker + CI**: `docker-compose` spins up web/worker/Postgres/Redis with one command; GitHub Actions runs the test suite against real Postgres+Redis services on every push.
 
-## Ekran Görüntüleri
+## Screenshots
 
-**Panel** — sipariş CSV'ni yükle, geçmiş yüklemelerini gör
-![Panel](screenshots/1_panel.png)
+**Dashboard** — upload your order CSV, see your past uploads
+![Dashboard](screenshots/1_dashboard.png)
 
-**Sütun Eşleme** — CSV'nin başlıkları otomatik tahmin edilir, gerekirse düzelt
-![Sütun Eşleme](screenshots/2_sutun_eslesme.png)
+**Column Mapping** — the CSV's headers are auto-detected, adjust if needed
+![Column Mapping](screenshots/2_column_mapping.png)
 
-**Analiz** — KPI'lar ve grafikler
-![Analiz](screenshots/3_analiz.png)
+**Analysis** — KPIs and charts
+![Analysis](screenshots/3_analysis.png)
 
-## Teknoloji
+## Tech Stack
 
 - **Backend**: Django 4.2, Django REST Framework, drf-spectacular (OpenAPI/Swagger)
-- **Asenkron işleme**: Celery + Redis
-- **Veri işleme**: pandas
-- **Grafikler**: matplotlib (arka planda render edilip base64 olarak gömülür — ayrı bir JS grafik kütüphanesi gerekmez)
-- **Auth**: Django'nun yerleşik auth sistemi
-- **Veritabanı**: Postgres (Docker/production), SQLite'a düşer (hızlı yerel geliştirme, `DATABASE_URL` tanımlı değilse)
+- **Async processing**: Celery + Redis
+- **Data processing**: pandas
+- **Charts**: matplotlib (rendered server-side and embedded as base64 — no separate JS charting library needed)
+- **Auth**: Django's built-in auth system
+- **Database**: Postgres (Docker/production), falls back to SQLite for fast local development if `DATABASE_URL` isn't set
 - **DevOps**: Docker + docker-compose, GitHub Actions CI
 
-## Kurulum — Docker (önerilen)
+## Setup — Docker (recommended)
 
 ```bash
-git clone <bu-repo>
+git clone <this-repo>
 cd orderlens
 docker compose up --build
 ```
 
-`http://localhost:8000` adresine git. Bu komut web + Celery worker + Postgres + Redis'i birlikte ayağa kaldırır; migration'lar `web` servisi başlarken otomatik çalışır.
+Visit `http://localhost:8000`. This spins up web + Celery worker + Postgres + Redis together; migrations run automatically when the `web` service starts.
 
-## Kurulum — yerel (Docker'sız, hızlı deneme)
+## Setup — local (without Docker, for quick testing)
 
 ```bash
 python3 -m venv venv
@@ -57,19 +57,19 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-Bu şekilde SQLite kullanılır ve `DATABASE_URL` tanımlı değildir. **Not:** Celery task'ları gerçek bir Redis broker olmadan `.delay()` çağrısında bağlanmaya çalışır — yerelde Redis çalıştırmıyorsan (`docker run -p 6379:6379 redis:7` yeterli) ve ayrı bir `celery -A datalens worker -l info` başlatmıyorsan, sütun eşleme sonrası analiz sonsuza kadar "hazırlanıyor" sayfasında kalır. Test suite bunu etkilemez — testler Celery'yi eager (senkron) modda çalıştırır.
+This uses SQLite and no `DATABASE_URL` is set. **Note:** Celery tasks try to connect to a real Redis broker when `.delay()` is called — if you're not running Redis locally (`docker run -p 6379:6379 redis:7` is enough) and don't have a separate `celery -A datalens worker -l info` running, the analysis will stay stuck on the "processing" page after column mapping forever. This doesn't affect the test suite — tests run Celery in eager (synchronous) mode.
 
-`http://127.0.0.1:8000` adresine git, bir hesap oluştur, ve `sample_data/orders.csv` dosyasını yükleyerek dene.
+Visit `http://127.0.0.1:8000`, create an account, and try it out with `sample_data/orders.csv`.
 
-## Testler
+## Tests
 
 ```bash
 python manage.py test analyzer
 ```
 
-12 test: giriş zorunluluğu, kullanıcılar arası veri izolasyonu, sütun eşleme tahmini, metrik hesaplamalarının doğruluğu, asenkron analiz akışı (işleniyor durumu, başarısızlık durumu, `run_analysis` task'ının doğru sonucu ürettiği), ve uçtan uca kayıt→yükleme→eşleme→analiz→API akışı. GitHub Actions her push'ta bu testleri Postgres+Redis servisleriyle çalıştırır (bkz. `.github/workflows/ci.yml`).
+12 tests: login requirement, data isolation between users, column mapping detection, metric calculation accuracy, the async analysis flow (processing state, failure state, that the `run_analysis` task produces the correct result), and the full end-to-end register→upload→map→analyze→API flow. GitHub Actions runs these tests against real Postgres+Redis services on every push (see `.github/workflows/ci.yml`).
 
-## API Örneği
+## API Example
 
 ```
 GET /api/datasets/1/stats/
@@ -84,50 +84,50 @@ GET /api/datasets/1/stats/
   "unique_customers": 7,
   "repeat_customer_rate": 100.0,
   "top_products": [
-    {"name": "Akıllı Saat", "revenue": 14994.0},
-    {"name": "Spor Ayakkabı", "revenue": 9093.0}
+    {"name": "Smart Watch", "revenue": 14994.0},
+    {"name": "Running Shoes", "revenue": 9093.0}
   ],
   "category_revenue": [
-    {"name": "Elektronik", "revenue": 29680.0}
+    {"name": "Electronics", "revenue": 29680.0}
   ],
   "status_counts": [
-    {"name": "Tamamlandı", "count": 40},
-    {"name": "İptal", "count": 3}
+    {"name": "Completed", "count": 40},
+    {"name": "Cancelled", "count": 3}
   ]
 }
 ```
 
-Analiz henüz hazır değilse (worker daha işlemi bitirmediyse) aynı endpoint `202 Accepted` ile `{"status": "processing", "detail": "..."}` döner. Tam OpenAPI şeması ve interaktif dokümantasyon: `/api/docs/`.
+If the analysis isn't ready yet (the worker hasn't finished), the same endpoint returns `202 Accepted` with `{"status": "processing", "detail": "..."}`. Full OpenAPI schema and interactive docs: `/api/docs/`.
 
 ## Deployment
 
-`render.yaml`, Postgres + Redis + web olacak şekilde bir [Render](https://render.com) Blueprint'i tanımlıyor. Build adımında migration'lar çalışır ve `seed_demo` komutu bir demo hesabı (`demo` / `demo1234`) + önceden eşlenmiş örnek veri oluşturur — idempotent, her deploy'da güvenle tekrar çalışır.
+`render.yaml` defines a [Render](https://render.com) Blueprint with Postgres + Redis + web. The build step runs migrations, and the `seed_demo` command creates a demo account (`demo` / `demo1234`) + a pre-mapped sample dataset — idempotent, safe to re-run on every deploy.
 
-> **Not:** Render'ın ücretsiz planı ayrı bir "background worker" servis tipini desteklemiyor, bu yüzden production'da (Docker'dan farklı olarak) Celery worker'ı web dyno'sunun içinde arka planda (`--detach`) çalıştırıyoruz — `render.yaml`'daki `startCommand`'a bak. Ücretli bir plana geçilirse, `docker-compose.yml`'deki gibi ayrı bir `type: worker` servisine bölünebilir. Ayrıca Render'ın ücretsiz Postgres/Redis planları belirli bir süre sonra sona erebilir — uzun vadeli bir canlı demo için bu planların yenilenmesi gerekir.
+> **Note:** Render's free plan doesn't support a separate "background worker" service type, so in production (unlike Docker) the Celery worker runs inside the web dyno in the background (`--detach`) — see the `startCommand` in `render.yaml`. On a paid plan, this could be split into its own `type: worker` service, as in `docker-compose.yml`. Also, Render's free Postgres/Redis plans can expire after a while — a long-running live demo would need those plans renewed.
 
-## Docker mimarisi
+## Docker Architecture
 
-`docker-compose.yml` dört servis tanımlar: `web` (Django + gunicorn), `worker` (Celery), `db` (Postgres 16), `redis` (Redis 7). Analiz akışı: sütun eşlemesi kaydedilir → `run_analysis` task'ı worker'a gönderilir → worker pandas ile hesaplayıp `AnalysisResult`'a yazar → web süreci sonucu önbellekten okur. Bu, büyük CSV'lerin HTTP isteğini bloklamasını engeller ve web/API her istekte pandas'ı yeniden çalıştırmaz.
+`docker-compose.yml` defines four services: `web` (Django + gunicorn), `worker` (Celery), `db` (Postgres 16), `redis` (Redis 7). Analysis flow: column mapping is saved → the `run_analysis` task is sent to the worker → the worker computes it with pandas and writes to `AnalysisResult` → the web process reads the result from cache. This keeps large CSVs from blocking the HTTP request, and the web/API never re-runs pandas on every request.
 
-## Proje Yapısı
+## Project Structure
 
 ```
 analyzer/
-  analysis.py     # sütun eşleme tahmini, metrik hesaplama, grafik üretimi (saf fonksiyonlar)
-  tasks.py        # run_analysis Celery task'ı — analysis.py'yi çağırıp AnalysisResult'a yazar
+  analysis.py     # column mapping detection, metric computation, chart generation (pure functions)
+  tasks.py        # run_analysis Celery task — calls analysis.py and writes to AnalysisResult
   models.py       # Dataset (owner, column_mapping), AnalysisResult (status, metrics, charts)
-  views.py        # auth, yükleme, eşleme, analiz (+ işleniyor sayfası) view'ları
-  api_views.py    # DRF API endpoint (202/200/422 durumları)
-  serializers.py  # API yanıt şemaları (Swagger dokümantasyonu için)
-  forms.py        # yükleme formu, dinamik sütun eşleme formu, kayıt formu
-  templates/      # tüm HTML şablonları
+  views.py        # auth, upload, mapping, analysis (+ processing page) views
+  api_views.py    # DRF API endpoint (202/200/422 states)
+  serializers.py  # API response schemas (for Swagger docs)
+  forms.py        # upload form, dynamic column mapping form, registration form
+  templates/       # all HTML templates
 datalens/
-  celery.py       # Celery app kurulumu
+  celery.py       # Celery app setup
 sample_data/
-  orders.csv      # denemek için gerçekçi bir örnek sipariş export'u
+  orders.csv      # a realistic sample order export to try it out with
 Dockerfile, docker-compose.yml, .github/workflows/ci.yml
 ```
 
-## Lisans
+## License
 
 MIT

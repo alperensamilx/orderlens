@@ -1,0 +1,11 @@
+Date,Item,Category,Qty,Amount,Customer,Status
+2026-05-02,Thermos,Home & Living,2,340,zeynep@example.com,Completed
+2026-05-04,Wireless Headphones,Electronics,1,899,mehmet@example.com,Completed
+2026-05-06,Backpack,Accessories,1,780,zeynep@example.com,Completed
+2026-05-08,Running Shoes,Clothing,1,1299,ali@example.com,Cancelled
+2026-05-10,Sunglasses,Accessories,2,1300,ayse@example.com,Completed
+2026-05-12,Smart Watch,Electronics,1,2499,mehmet@example.com,Completed
+2026-05-14,Yoga Mat,Sports,1,450,can@example.com,Completed
+2026-05-16,Bluetooth Speaker,Electronics,1,1199,zeynep@example.com,Refunded
+2026-05-18,Thermos,Home & Living,1,170,ali@example.com,Completed
+2026-05-20,Wireless Headphones,Electronics,2,1798,ayse@example.com,Completed

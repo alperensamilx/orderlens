@@ -10,13 +10,13 @@ CANONICAL_FIELDS = ['date', 'product', 'amount', 'quantity', 'customer', 'catego
 REQUIRED_FIELDS = ['date', 'product', 'amount']
 
 FIELD_LABELS = {
-    'date': 'Sipariş Tarihi',
-    'product': 'Ürün Adı',
-    'amount': 'Tutar (satır geliri)',
-    'quantity': 'Adet',
-    'customer': 'Müşteri (e-posta/isim)',
-    'category': 'Kategori',
-    'status': 'Sipariş Durumu',
+    'date': 'Order Date',
+    'product': 'Product Name',
+    'amount': 'Amount (line revenue)',
+    'quantity': 'Quantity',
+    'customer': 'Customer (email/name)',
+    'category': 'Category',
+    'status': 'Order Status',
 }
 
 _KEYWORDS = {
@@ -114,8 +114,8 @@ def build_revenue_trend_chart(df):
 
     fig, ax = plt.subplots(figsize=(8, 4))
     trend.plot(ax=ax, color='#4f46e5', marker='o')
-    ax.set_title('Zaman İçinde Gelir')
-    ax.set_ylabel('Gelir')
+    ax.set_title('Revenue Over Time')
+    ax.set_ylabel('Revenue')
     fig.tight_layout()
     return _fig_to_base64(fig)
 
@@ -127,8 +127,8 @@ def build_top_products_chart(df, top_n=8):
 
     fig, ax = plt.subplots(figsize=(8, 4))
     top.plot(kind='barh', ax=ax, color='#818cf8')
-    ax.set_xlabel('Gelir')
-    ax.set_title('En Çok Gelir Getiren Ürünler')
+    ax.set_xlabel('Revenue')
+    ax.set_title('Top Revenue-Generating Products')
     ax.invert_yaxis()
     fig.tight_layout()
     return _fig_to_base64(fig)
@@ -143,7 +143,7 @@ def build_category_chart(df):
 
     fig, ax = plt.subplots(figsize=(6, 6))
     ax.pie(revenue.values, labels=revenue.index, autopct='%1.0f%%')
-    ax.set_title('Kategoriye Göre Gelir Dağılımı')
+    ax.set_title('Revenue by Category')
     fig.tight_layout()
     return _fig_to_base64(fig)
 
@@ -157,6 +157,6 @@ def build_status_chart(df):
 
     fig, ax = plt.subplots(figsize=(6, 6))
     ax.pie(counts.values, labels=counts.index, autopct='%1.0f%%')
-    ax.set_title('Sipariş Durumu Dağılımı')
+    ax.set_title('Order Status Breakdown')
     fig.tight_layout()
     return _fig_to_base64(fig)

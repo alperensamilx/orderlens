@@ -1,46 +1,46 @@
 Order Date,Product,Category,Quantity,Total,Customer Email,Status
-2026-04-02,Kablosuz Kulaklık,Elektronik,1,899,ali@example.com,Tamamlandı
-2026-04-03,Spor Ayakkabı,Giyim,1,1299,zeynep@example.com,Tamamlandı
-2026-04-05,Termos,Ev & Yaşam,2,340,mehmet@example.com,Tamamlandı
-2026-04-06,Akıllı Saat,Elektronik,1,2499,ayse@example.com,Tamamlandı
-2026-04-08,Yoga Matı,Spor,1,450,can@example.com,İptal
-2026-04-09,Güneş Gözlüğü,Aksesuar,1,650,ali@example.com,Tamamlandı
-2026-04-11,Bluetooth Hoparlör,Elektronik,1,1199,elif@example.com,Tamamlandı
-2026-04-12,Sırt Çantası,Aksesuar,1,780,deniz@example.com,Tamamlandı
-2026-04-14,Kablosuz Kulaklık,Elektronik,2,1798,zeynep@example.com,Tamamlandı
-2026-04-15,Spor Ayakkabı,Giyim,1,1299,mehmet@example.com,İade
-2026-04-17,Termos,Ev & Yaşam,1,170,can@example.com,Tamamlandı
-2026-04-19,Yoga Matı,Spor,2,900,ayse@example.com,Tamamlandı
-2026-04-21,Akıllı Saat,Elektronik,1,2499,elif@example.com,Tamamlandı
-2026-04-23,Güneş Gözlüğü,Aksesuar,1,650,deniz@example.com,Tamamlandı
-2026-04-25,Bluetooth Hoparlör,Elektronik,1,1199,ali@example.com,Tamamlandı
-2026-04-27,Sırt Çantası,Aksesuar,1,780,can@example.com,Tamamlandı
-2026-04-29,Kablosuz Kulaklık,Elektronik,1,899,zeynep@example.com,Tamamlandı
-2026-05-01,Spor Ayakkabı,Giyim,1,1299,elif@example.com,Tamamlandı
-2026-05-03,Termos,Ev & Yaşam,3,510,mehmet@example.com,Tamamlandı
-2026-05-05,Akıllı Saat,Elektronik,1,2499,ali@example.com,Tamamlandı
-2026-05-07,Yoga Matı,Spor,1,450,deniz@example.com,İptal
-2026-05-09,Güneş Gözlüğü,Aksesuar,2,1300,zeynep@example.com,Tamamlandı
-2026-05-11,Bluetooth Hoparlör,Elektronik,1,1199,can@example.com,Tamamlandı
-2026-05-13,Sırt Çantası,Aksesuar,1,780,ayse@example.com,Tamamlandı
-2026-05-15,Kablosuz Kulaklık,Elektronik,1,899,elif@example.com,Tamamlandı
-2026-05-17,Spor Ayakkabı,Giyim,1,1299,deniz@example.com,Tamamlandı
-2026-05-19,Termos,Ev & Yaşam,1,170,ali@example.com,İade
-2026-05-21,Akıllı Saat,Elektronik,1,2499,zeynep@example.com,Tamamlandı
-2026-05-23,Yoga Matı,Spor,1,450,mehmet@example.com,Tamamlandı
-2026-05-25,Güneş Gözlüğü,Aksesuar,1,650,can@example.com,Tamamlandı
-2026-05-27,Bluetooth Hoparlör,Elektronik,2,2398,ayse@example.com,Tamamlandı
-2026-05-29,Sırt Çantası,Aksesuar,1,780,elif@example.com,Tamamlandı
-2026-05-31,Kablosuz Kulaklık,Elektronik,1,899,deniz@example.com,Tamamlandı
-2026-06-02,Spor Ayakkabı,Giyim,2,2598,ali@example.com,Tamamlandı
-2026-06-04,Termos,Ev & Yaşam,1,170,zeynep@example.com,Tamamlandı
-2026-06-06,Akıllı Saat,Elektronik,1,2499,can@example.com,Tamamlandı
-2026-06-08,Yoga Matı,Spor,1,450,ayse@example.com,Tamamlandı
-2026-06-10,Güneş Gözlüğü,Aksesuar,1,650,mehmet@example.com,İptal
-2026-06-12,Bluetooth Hoparlör,Elektronik,1,1199,elif@example.com,Tamamlandı
-2026-06-14,Sırt Çantası,Aksesuar,2,1560,deniz@example.com,Tamamlandı
-2026-06-16,Kablosuz Kulaklık,Elektronik,1,899,ali@example.com,Tamamlandı
-2026-06-18,Spor Ayakkabı,Giyim,1,1299,zeynep@example.com,Tamamlandı
-2026-06-20,Akıllı Saat,Elektronik,1,2499,ayse@example.com,Tamamlandı
-2026-06-22,Yoga Matı,Spor,1,450,can@example.com,Tamamlandı
-2026-06-24,Bluetooth Hoparlör,Elektronik,1,1199,elif@example.com,Tamamlandı
+2026-04-02,Wireless Headphones,Electronics,1,899,ali@example.com,Completed
+2026-04-03,Running Shoes,Clothing,1,1299,zeynep@example.com,Completed
+2026-04-05,Thermos,Home & Living,2,340,mehmet@example.com,Completed
+2026-04-06,Smart Watch,Electronics,1,2499,ayse@example.com,Completed
+2026-04-08,Yoga Mat,Sports,1,450,can@example.com,Cancelled
+2026-04-09,Sunglasses,Accessories,1,650,ali@example.com,Completed
+2026-04-11,Bluetooth Speaker,Electronics,1,1199,elif@example.com,Completed
+2026-04-12,Backpack,Accessories,1,780,deniz@example.com,Completed
+2026-04-14,Wireless Headphones,Electronics,2,1798,zeynep@example.com,Completed
+2026-04-15,Running Shoes,Clothing,1,1299,mehmet@example.com,Refunded
+2026-04-17,Thermos,Home & Living,1,170,can@example.com,Completed
+2026-04-19,Yoga Mat,Sports,2,900,ayse@example.com,Completed
+2026-04-21,Smart Watch,Electronics,1,2499,elif@example.com,Completed
+2026-04-23,Sunglasses,Accessories,1,650,deniz@example.com,Completed
+2026-04-25,Bluetooth Speaker,Electronics,1,1199,ali@example.com,Completed
+2026-04-27,Backpack,Accessories,1,780,can@example.com,Completed
+2026-04-29,Wireless Headphones,Electronics,1,899,zeynep@example.com,Completed
+2026-05-01,Running Shoes,Clothing,1,1299,elif@example.com,Completed
+2026-05-03,Thermos,Home & Living,3,510,mehmet@example.com,Completed
+2026-05-05,Smart Watch,Electronics,1,2499,ali@example.com,Completed
+2026-05-07,Yoga Mat,Sports,1,450,deniz@example.com,Cancelled
+2026-05-09,Sunglasses,Accessories,2,1300,zeynep@example.com,Completed
+2026-05-11,Bluetooth Speaker,Electronics,1,1199,can@example.com,Completed
+2026-05-13,Backpack,Accessories,1,780,ayse@example.com,Completed
+2026-05-15,Wireless Headphones,Electronics,1,899,elif@example.com,Completed
+2026-05-17,Running Shoes,Clothing,1,1299,deniz@example.com,Completed
+2026-05-19,Thermos,Home & Living,1,170,ali@example.com,Refunded
+2026-05-21,Smart Watch,Electronics,1,2499,zeynep@example.com,Completed
+2026-05-23,Yoga Mat,Sports,1,450,mehmet@example.com,Completed
+2026-05-25,Sunglasses,Accessories,1,650,can@example.com,Completed
+2026-05-27,Bluetooth Speaker,Electronics,2,2398,ayse@example.com,Completed
+2026-05-29,Backpack,Accessories,1,780,elif@example.com,Completed
+2026-05-31,Wireless Headphones,Electronics,1,899,deniz@example.com,Completed
+2026-06-02,Running Shoes,Clothing,2,2598,ali@example.com,Completed
+2026-06-04,Thermos,Home & Living,1,170,zeynep@example.com,Completed
+2026-06-06,Smart Watch,Electronics,1,2499,can@example.com,Completed
+2026-06-08,Yoga Mat,Sports,1,450,ayse@example.com,Completed
+2026-06-10,Sunglasses,Accessories,1,650,mehmet@example.com,Cancelled
+2026-06-12,Bluetooth Speaker,Electronics,1,1199,elif@example.com,Completed
+2026-06-14,Backpack,Accessories,2,1560,deniz@example.com,Completed
+2026-06-16,Wireless Headphones,Electronics,1,899,ali@example.com,Completed
+2026-06-18,Running Shoes,Clothing,1,1299,zeynep@example.com,Completed
+2026-06-20,Smart Watch,Electronics,1,2499,ayse@example.com,Completed
+2026-06-22,Yoga Mat,Sports,1,450,can@example.com,Completed
+2026-06-24,Bluetooth Speaker,Electronics,1,1199,elif@example.com,Completed

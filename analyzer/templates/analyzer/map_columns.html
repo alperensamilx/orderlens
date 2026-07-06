@@ -1,20 +1,20 @@
 {% extends 'analyzer/base.html' %}
-{% block title %}OrderLens - Sütun Eşleme{% endblock %}
+{% block title %}OrderLens - Column Mapping{% endblock %}
 {% block content %}
-    <p><a href="{% url 'analyzer:dataset_list' %}">&larr; Panelime dön</a></p>
+    <p><a href="{% url 'analyzer:dataset_list' %}">&larr; Back to my dashboard</a></p>
 
     <div class="card">
-        <h2>{{ dataset.name }} — Sütunları Eşle</h2>
-        <p class="muted">CSV'ndeki sütun başlıklarını aşağıdaki alanlarla eşleştir. Tarih, Ürün ve Tutar zorunlu; diğerleri varsa daha zengin bir analiz sağlar, yoksa boş bırakabilirsin. Tahminleri otomatik doldurduk, gerekirse değiştir.</p>
+        <h2>{{ dataset.name }} — Map Columns</h2>
+        <p class="muted">Match your CSV's column headers to the fields below. Date, Product, and Amount are required; the others enrich the analysis if present, otherwise leave them blank. We've auto-filled our best guesses — adjust if needed.</p>
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}
-            <button class="btn" type="submit">Eşlemeyi Kaydet ve Analiz Et</button>
+            <button class="btn" type="submit">Save Mapping and Analyze</button>
         </form>
     </div>
 
     <div class="card">
-        <h3>CSV Önizleme (ilk 5 satır)</h3>
+        <h3>CSV Preview (first 5 rows)</h3>
         <div class="table-scroll">
             {{ preview|safe }}
         </div>

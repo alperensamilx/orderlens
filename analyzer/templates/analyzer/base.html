@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -118,20 +118,20 @@
         <div class="inner navbar">
             <div>
                 <a href="{% url 'analyzer:dataset_list' %}">📦 OrderLens</a>
-                <div class="tagline">E-ticaret sipariş verini yükle, satış performansını gör</div>
+                <div class="tagline">Upload your e-commerce order data, see your sales performance</div>
             </div>
             {% if user.is_authenticated %}
                 <div class="links">
                     <span>{{ user.username }}</span>
                     <form method="post" action="{% url 'analyzer:logout' %}" style="margin:0;">
                         {% csrf_token %}
-                        <button type="submit">Çıkış Yap</button>
+                        <button type="submit">Log Out</button>
                     </form>
                 </div>
             {% else %}
                 <div class="links">
-                    <a href="{% url 'analyzer:login' %}">Giriş Yap</a>
-                    <a href="{% url 'analyzer:register' %}">Kayıt Ol</a>
+                    <a href="{% url 'analyzer:login' %}">Log In</a>
+                    <a href="{% url 'analyzer:register' %}">Sign Up</a>
                 </div>
             {% endif %}
         </div>

@@ -1,19 +1,19 @@
 {% extends 'analyzer/base.html' %}
-{% block title %}OrderLens - Panelim{% endblock %}
+{% block title %}OrderLens - My Dashboard{% endblock %}
 {% block content %}
     <div class="card">
-        <h2>Sipariş CSV'ni Yükle</h2>
-        <p class="muted">Shopify, Etsy, WooCommerce veya benzeri bir platformdan aldığın sipariş export'unu (CSV) yükle. Sütun isimleri farklı olsa da sorun değil — bir sonraki adımda hangi sütunun neye karşılık geldiğini birlikte eşleştireceğiz.</p>
+        <h2>Upload Your Order CSV</h2>
+        <p class="muted">Upload the order export (CSV) from Shopify, Etsy, WooCommerce, or a similar platform. Column names can differ — we'll map them together in the next step.</p>
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
-            <button class="btn" type="submit">Yükle ve Devam Et</button>
+            <button class="btn" type="submit">Upload and Continue</button>
         </form>
     </div>
 
     {% if datasets %}
         <div class="card">
-            <h3>Yüklediğin Dosyalar</h3>
+            <h3>Your Uploaded Files</h3>
             <ul class="dataset-list">
                 {% for ds in datasets %}
                     <li>
@@ -21,7 +21,7 @@
                             <a href="{% url 'analyzer:analyze' ds.pk %}">{{ ds.name }}</a>
                         {% else %}
                             <a href="{% url 'analyzer:map_columns' ds.pk %}">{{ ds.name }}</a>
-                            <span class="badge">eşleme bekliyor</span>
+                            <span class="badge">mapping pending</span>
                         {% endif %}
                         <span class="date">{{ ds.uploaded_at|date:"d.m.Y H:i" }}</span>
                     </li>

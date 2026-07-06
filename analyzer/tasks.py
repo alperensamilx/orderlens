@@ -26,8 +26,8 @@ def run_analysis(dataset_id):
         if normalized.empty:
             result.status = AnalysisResult.FAILED
             result.error_message = (
-                'Eşlediğin tarih ve tutar sütunlarında geçerli veri bulunamadı. '
-                'Lütfen sütun eşlemesini kontrol et.'
+                "No valid data found in the mapped date and amount columns. "
+                "Please check your column mapping."
             )
             result.save(update_fields=['status', 'error_message'])
             return

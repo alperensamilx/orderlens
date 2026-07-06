@@ -1,13 +1,13 @@
 {% extends 'analyzer/base.html' %}
-{% block title %}OrderLens - Kayıt Ol{% endblock %}
+{% block title %}OrderLens - Sign Up{% endblock %}
 {% block content %}
     <div class="card">
-        <h2>Kayıt Ol</h2>
+        <h2>Sign Up</h2>
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}
-            <button class="btn" type="submit">Hesap Oluştur</button>
+            <button class="btn" type="submit">Create Account</button>
         </form>
-        <p class="muted">Zaten hesabın var mı? <a href="{% url 'analyzer:login' %}">Giriş yap</a></p>
+        <p class="muted">Already have an account? <a href="{% url 'analyzer:login' %}">Log in</a></p>
     </div>
 {% endblock %}

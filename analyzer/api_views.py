@@ -28,10 +28,10 @@ class DatasetStatsAPIView(APIView):
         try:
             dataset = Dataset.objects.get(pk=pk, owner=request.user)
         except Dataset.DoesNotExist:
-            raise NotFound('Dataset bulunamadı.')
+            raise NotFound('Dataset not found.')
 
         if not dataset.is_mapped:
-            raise ValidationError('Bu dataset için sütun eşlemesi henüz yapılmamış.')
+            raise ValidationError('This dataset has not been column-mapped yet.')
 
         result = AnalysisResult.objects.filter(dataset=dataset).first()
 
