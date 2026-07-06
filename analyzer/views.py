@@ -9,7 +9,8 @@ from django.views.generic import CreateView
 
 from . import analysis
 from .forms import ColumnMappingForm, DatasetUploadForm, RegisterForm
-from .models import Dataset
+from .models import AnalysisResult, Dataset
+from .tasks import run_analysis
 
 
 class RegisterView(CreateView):
@@ -59,6 +60,7 @@ def map_columns(request, pk):
         if form.is_valid():
             dataset.column_mapping = form.get_mapping()
             dataset.save()
+            run_analysis.delay(dataset.pk)
             return redirect('analyzer:analyze', pk=dataset.pk)
     else:
         form = ColumnMappingForm(columns=columns, initial_mapping=initial_mapping)
@@ -78,27 +80,20 @@ def analyze_dataset(request, pk):
     if not dataset.is_mapped:
         return redirect('analyzer:map_columns', pk=dataset.pk)
 
-    try:
-        df = pd.read_csv(dataset.file.path)
-    except Exception as exc:
-        return render(request, 'analyzer/error.html', {'error': str(exc), 'dataset': dataset})
+    result = AnalysisResult.objects.filter(dataset=dataset).first()
 
-    normalized = analysis.normalize_dataframe(df, dataset.column_mapping)
+    if result is None or result.status in (AnalysisResult.PENDING, AnalysisResult.PROCESSING):
+        return render(request, 'analyzer/processing.html', {'dataset': dataset})
 
-    if normalized.empty:
-        return render(request, 'analyzer/error.html', {
-            'error': 'Eşlediğin tarih ve tutar sütunlarında geçerli veri bulunamadı. Lütfen sütun eşlemesini kontrol et.',
-            'dataset': dataset,
-        })
-
-    metrics = analysis.compute_metrics(normalized)
+    if result.status == AnalysisResult.FAILED:
+        return render(request, 'analyzer/error.html', {'error': result.error_message, 'dataset': dataset})
 
     context = {
         'dataset': dataset,
-        'metrics': metrics,
-        'revenue_trend_chart': analysis.build_revenue_trend_chart(normalized),
-        'top_products_chart': analysis.build_top_products_chart(normalized),
-        'category_chart': analysis.build_category_chart(normalized),
-        'status_chart': analysis.build_status_chart(normalized),
+        'metrics': result.metrics,
+        'revenue_trend_chart': result.charts.get('revenue_trend'),
+        'top_products_chart': result.charts.get('top_products'),
+        'category_chart': result.charts.get('category'),
+        'status_chart': result.charts.get('status'),
     }
     return render(request, 'analyzer/analyze.html', context)

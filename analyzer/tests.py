@@ -7,7 +7,8 @@ from django.test import TestCase
 from django.urls import reverse
 
 from .analysis import compute_metrics, detect_column_mapping, normalize_dataframe
-from .models import Dataset
+from .models import AnalysisResult, Dataset
+from .tasks import run_analysis
 
 ORDERS_CSV = b"""Order Date,Product,Category,Quantity,Total,Customer Email,Status
 2026-04-01,Kulaklik,Elektronik,1,100,a@example.com,Tamamlandi
@@ -136,3 +137,53 @@ class EndToEndFlowTests(TestCase):
         response = self.client.post(reverse('analyzer:dataset_list'), {'file': file})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'csv')
+
+
+class AsyncAnalysisTests(TestCase):
+    """map_columns triggers run_analysis via Celery (eager in tests). These tests
+    exercise the cases where the analysis result isn't a simple immediate success,
+    by driving AnalysisResult/run_analysis directly instead of through map_columns."""
+
+    def setUp(self):
+        self.user = User.objects.create_user(username='seller5', password='pass12345')
+        self.client.login(username='seller5', password='pass12345')
+        file = SimpleUploadedFile('orders.csv', ORDERS_CSV, content_type='text/csv')
+        self.client.post(reverse('analyzer:dataset_list'), {'file': file})
+        self.dataset = Dataset.objects.latest('uploaded_at')
+        self.dataset.column_mapping = {
+            'date': 'Order Date', 'product': 'Product', 'amount': 'Total',
+            'quantity': 'Quantity', 'customer': 'Customer Email',
+            'category': 'Category', 'status': 'Status',
+        }
+        self.dataset.save()
+
+    def test_analyze_shows_processing_page_before_task_runs(self):
+        response = self.client.get(reverse('analyzer:analyze', args=[self.dataset.pk]))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'hazırlanıyor')
+
+    def test_api_returns_202_before_task_runs(self):
+        response = self.client.get(reverse('analyzer:api_dataset_stats', args=[self.dataset.pk]))
+        self.assertEqual(response.status_code, 202)
+        self.assertEqual(response.json()['status'], 'pending')
+
+    def test_run_analysis_task_populates_result(self):
+        run_analysis(self.dataset.pk)
+        result = AnalysisResult.objects.get(dataset=self.dataset)
+        self.assertEqual(result.status, AnalysisResult.DONE)
+        self.assertEqual(result.metrics['order_count'], 4)
+        self.assertIsNotNone(result.charts.get('revenue_trend'))
+
+        response = self.client.get(reverse('analyzer:analyze', args=[self.dataset.pk]))
+        self.assertContains(response, 'Toplam Gelir')
+
+        api_response = self.client.get(reverse('analyzer:api_dataset_stats', args=[self.dataset.pk]))
+        self.assertEqual(api_response.status_code, 200)
+        self.assertEqual(api_response.json()['order_count'], 4)
+
+    def test_analyze_shows_error_when_analysis_failed(self):
+        AnalysisResult.objects.create(
+            dataset=self.dataset, status=AnalysisResult.FAILED, error_message='Something went wrong.',
+        )
+        response = self.client.get(reverse('analyzer:analyze', args=[self.dataset.pk]))
+        self.assertContains(response, 'Something went wrong.')

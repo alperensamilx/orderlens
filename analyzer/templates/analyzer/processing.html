@@ -1,0 +1,9 @@
+{% extends 'analyzer/base.html' %}
+{% block title %}OrderLens - Analiz Hazırlanıyor{% endblock %}
+{% block extra_head %}<meta http-equiv="refresh" content="2">{% endblock %}
+{% block content %}
+    <div class="card" style="text-align:center; padding:48px 24px;">
+        <h2>Analiz hazırlanıyor…</h2>
+        <p class="muted">"{{ dataset.name }}" arka planda işleniyor. Bu sayfa birkaç saniyede bir otomatik yenilenecek.</p>
+    </div>
+{% endblock %}

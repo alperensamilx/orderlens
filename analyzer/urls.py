@@ -1,5 +1,6 @@
 from django.contrib.auth.views import LogoutView
 from django.urls import path
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 from . import api_views, views
 
@@ -13,4 +14,6 @@ urlpatterns = [
     path('login/', views.OrderLensLoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('api/datasets/<int:pk>/stats/', api_views.DatasetStatsAPIView.as_view(), name='api_dataset_stats'),
+    path('api/schema/', SpectacularAPIView.as_view(), name='api_schema'),
+    path('api/docs/', SpectacularSwaggerView.as_view(url_name='analyzer:api_schema'), name='api_docs'),
 ]
