@@ -1,3 +1,5 @@
+import io
+
 import pandas as pd
 from celery import shared_task
 from django.utils import timezone
@@ -18,7 +20,7 @@ def run_analysis(dataset_id):
     result.save(update_fields=['status'])
 
     try:
-        df = pd.read_csv(dataset.file.path)
+        df = pd.read_csv(io.StringIO(dataset.content))
         normalized = analysis.normalize_dataframe(df, dataset.column_mapping)
 
         if normalized.empty:

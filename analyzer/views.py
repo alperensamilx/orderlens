@@ -1,3 +1,5 @@
+import io
+
 import pandas as pd
 
 from django.contrib.auth import login
@@ -33,9 +35,12 @@ def dataset_list(request):
     if request.method == 'POST':
         form = DatasetUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            dataset = form.save(commit=False)
-            dataset.owner = request.user
-            dataset.save()
+            uploaded = form.cleaned_data['file']
+            dataset = Dataset.objects.create(
+                owner=request.user,
+                name=uploaded.name,
+                content=uploaded.read().decode('utf-8'),
+            )
             return redirect('analyzer:map_columns', pk=dataset.pk)
     else:
         form = DatasetUploadForm()
@@ -48,7 +53,7 @@ def dataset_list(request):
 def map_columns(request, pk):
     dataset = get_object_or_404(Dataset, pk=pk, owner=request.user)
     try:
-        preview_df = pd.read_csv(dataset.file.path, nrows=5)
+        preview_df = pd.read_csv(io.StringIO(dataset.content), nrows=5)
     except Exception as exc:
         return render(request, 'analyzer/error.html', {'error': str(exc), 'dataset': dataset})
 

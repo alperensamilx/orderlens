@@ -3,13 +3,10 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
 from .analysis import CANONICAL_FIELDS, FIELD_LABELS, REQUIRED_FIELDS
-from .models import Dataset
 
 
-class DatasetUploadForm(forms.ModelForm):
-    class Meta:
-        model = Dataset
-        fields = ['file']
+class DatasetUploadForm(forms.Form):
+    file = forms.FileField()
 
     def clean_file(self):
         file = self.cleaned_data['file']

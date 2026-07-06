@@ -1,10 +1,9 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
 
 from analyzer import analysis
-from analyzer.models import AnalysisResult, Dataset
+from analyzer.models import Dataset
 from analyzer.tasks import run_analysis
 
 DEMO_USERNAME = 'demo'
@@ -13,9 +12,10 @@ DEMO_PASSWORD = 'demo1234'
 
 class Command(BaseCommand):
     help = (
-        'Creates (or reuses) a demo user with a pre-mapped sample dataset, '
-        'so a freshly deployed instance (ephemeral disk) still has something to show. '
-        'Safe to run on every deploy.'
+        'Creates (or resets) a demo user with a pre-mapped sample dataset, '
+        'so a freshly deployed instance still has something to show. '
+        'Safe to run on every deploy — recreates the demo dataset each time '
+        'so it can never get stuck in a stale/broken state.'
     )
 
     def handle(self, *args, **options):
@@ -28,25 +28,20 @@ class Command(BaseCommand):
         else:
             self.stdout.write(f'Demo user "{DEMO_USERNAME}" already exists')
 
-        dataset = Dataset.objects.filter(owner=user).first()
+        # Recreate from scratch every run (cheap, and guarantees the demo
+        # account is never left pointing at a half-finished/broken analysis).
+        Dataset.objects.filter(owner=user).delete()
 
-        if dataset is None:
-            csv_path = settings.BASE_DIR / 'sample_data' / 'orders.csv'
-            content = csv_path.read_bytes()
-            columns = content.decode('utf-8').splitlines()[0].split(',')
-            mapping = analysis.detect_column_mapping(columns)
+        csv_path = settings.BASE_DIR / 'sample_data' / 'orders.csv'
+        content = csv_path.read_text()
+        mapping = analysis.detect_column_mapping(content.splitlines()[0].split(','))
 
-            dataset = Dataset(owner=user, name='orders.csv', column_mapping=mapping)
-            dataset.file.save('orders.csv', ContentFile(content), save=True)
-            self.stdout.write(self.style.SUCCESS('Created demo dataset with column mapping'))
-        else:
-            self.stdout.write('Demo dataset already exists')
+        dataset = Dataset.objects.create(
+            owner=user, name='orders.csv', content=content, column_mapping=mapping,
+        )
+        self.stdout.write(self.style.SUCCESS('Created demo dataset with column mapping'))
 
-        result = AnalysisResult.objects.filter(dataset=dataset).first()
-        if result is None or result.status != AnalysisResult.DONE:
-            # Run inline (not .delay()) since this runs during the build step, before
-            # any worker process is up — we want the demo ready the moment the app starts.
-            run_analysis(dataset.pk)
-            self.stdout.write(self.style.SUCCESS('Computed demo analysis result'))
-        else:
-            self.stdout.write('Demo analysis already computed, skipping')
+        # Run inline (not .delay()) since this runs during the build step, before
+        # any worker process is up — we want the demo ready the moment the app starts.
+        run_analysis(dataset.pk)
+        self.stdout.write(self.style.SUCCESS('Computed demo analysis result'))
