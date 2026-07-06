@@ -2,7 +2,7 @@
 
 E-ticaret satıcıları için sipariş CSV export'larını (Shopify, Etsy, WooCommerce, Trendyol vb.) birkaç adımda bir satış analiz panosuna çeviren bir Django uygulaması.
 
-**Canlı demo:** _(deploy sonrası eklenecek)_ — `demo` / `demo1234` ile giriş yapıp önceden yüklenmiş örnek veriyi inceleyebilirsin.
+**Canlı demo:** [orderlens-xkef.onrender.com](https://orderlens-xkef.onrender.com) — `demo` / `demo1234` ile giriş yapıp önceden yüklenmiş örnek veriyi inceleyebilirsin. (Ücretsiz Render planı hareketsiz kalınca uykuya geçer, ilk istek ~30-50 saniye sürebilir.)
 
 Küçük bir e-ticaret satıcısı genelde siparişlerini Excel/Google Sheets'te elle karıştırıp gelir, en çok satan ürün, tekrar eden müşteri gibi soruların cevabını arar. OrderLens bu CSV'yi yükleyip birkaç saniyede bu soruların cevabını, ilgili grafiklerle birlikte veriyor.
 
