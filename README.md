@@ -101,9 +101,9 @@ Analiz henüz hazır değilse (worker daha işlemi bitirmediyse) aynı endpoint 
 
 ## Deployment
 
-`render.yaml`, Postgres + Redis + web + Celery worker olacak şekilde bir [Render](https://render.com) Blueprint'i tanımlıyor. Build adımında migration'lar çalışır ve `seed_demo` komutu bir demo hesabı (`demo` / `demo1234`) + önceden eşlenmiş örnek veri oluşturur — idempotent, her deploy'da güvenle tekrar çalışır.
+`render.yaml`, Postgres + Redis + web olacak şekilde bir [Render](https://render.com) Blueprint'i tanımlıyor. Build adımında migration'lar çalışır ve `seed_demo` komutu bir demo hesabı (`demo` / `demo1234`) + önceden eşlenmiş örnek veri oluşturur — idempotent, her deploy'da güvenle tekrar çalışır.
 
-> **Not:** Bu blueprint henüz gerçek bir Render hesabında test edilmedi (deploy adımı ayrı bir sonraki iş). Render'ın ücretsiz Postgres/Redis planları belirli bir süre sonra sona erebilir — uzun vadeli bir canlı demo için bu planların yenilenmesi gerekir.
+> **Not:** Render'ın ücretsiz planı ayrı bir "background worker" servis tipini desteklemiyor, bu yüzden production'da (Docker'dan farklı olarak) Celery worker'ı web dyno'sunun içinde arka planda (`--detach`) çalıştırıyoruz — `render.yaml`'daki `startCommand`'a bak. Ücretli bir plana geçilirse, `docker-compose.yml`'deki gibi ayrı bir `type: worker` servisine bölünebilir. Ayrıca Render'ın ücretsiz Postgres/Redis planları belirli bir süre sonra sona erebilir — uzun vadeli bir canlı demo için bu planların yenilenmesi gerekir.
 
 ## Docker mimarisi
 
