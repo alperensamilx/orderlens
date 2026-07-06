@@ -14,11 +14,14 @@ Küçük bir e-ticaret satıcısı genelde siparişlerini Excel/Google Sheets'te
 
 ## Ekran Görüntüleri
 
-> `screenshots/` klasörüne eklenecek.
+**Panel** — sipariş CSV'ni yükle, geçmiş yüklemelerini gör
+![Panel](screenshots/1_panel.png)
 
-| Panel | Sütun Eşleme | Analiz |
-|---|---|---|
-| _(yakında)_ | _(yakında)_ | _(yakında)_ |
+**Sütun Eşleme** — CSV'nin başlıkları otomatik tahmin edilir, gerekirse düzelt
+![Sütun Eşleme](screenshots/2_sutun_eslesme.png)
+
+**Analiz** — KPI'lar ve grafikler
+![Analiz](screenshots/3_analiz.png)
 
 ## Teknoloji
 
