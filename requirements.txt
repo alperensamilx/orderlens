@@ -4,6 +4,8 @@ cycler==0.12.1
 Django==4.2.30
 djangorestframework==3.16.1
 fonttools==4.60.2
+greenlet==3.2.5
+gunicorn==23.0.0
 importlib_resources==6.5.2
 kiwisolver==1.4.7
 matplotlib==3.9.4
@@ -11,6 +13,8 @@ numpy==2.0.2
 packaging==26.2
 pandas==2.3.3
 pillow==11.3.0
+playwright==1.60.0
+pyee==13.0.1
 pyparsing==3.3.2
 python-dateutil==2.9.0.post0
 pytz==2026.2
@@ -18,4 +22,5 @@ six==1.17.0
 sqlparse==0.5.5
 typing_extensions==4.16.0
 tzdata==2026.2
+whitenoise==6.11.0
 zipp==3.23.1
