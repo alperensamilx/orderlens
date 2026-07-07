@@ -65,7 +65,24 @@ def map_columns(request, pk):
         if form.is_valid():
             dataset.column_mapping = form.get_mapping()
             dataset.save()
-            run_analysis.delay(dataset.pk)
+            try:
+                run_analysis.delay(dataset.pk)
+            except Exception as exc:
+                # Can't reach the Celery broker (e.g. no Redis running locally
+                # without Docker) — fail the analysis with a clear, actionable
+                # message instead of letting the request crash.
+                AnalysisResult.objects.update_or_create(
+                    dataset=dataset,
+                    defaults={
+                        'status': AnalysisResult.FAILED,
+                        'error_message': (
+                            "Couldn't reach the background task queue (Redis/Celery): "
+                            f"{exc}. If you're running locally without Docker, start "
+                            "Redis and a Celery worker — see the README's "
+                            "'Setup — local' section."
+                        ),
+                    },
+                )
             return redirect('analyzer:analyze', pk=dataset.pk)
     else:
         form = ColumnMappingForm(columns=columns, initial_mapping=initial_mapping)

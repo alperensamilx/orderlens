@@ -57,7 +57,7 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-This uses SQLite and no `DATABASE_URL` is set. **Note:** Celery tasks try to connect to a real Redis broker when `.delay()` is called — if you're not running Redis locally (`docker run -p 6379:6379 redis:7` is enough) and don't have a separate `celery -A datalens worker -l info` running, the analysis will stay stuck on the "processing" page after column mapping forever. This doesn't affect the test suite — tests run Celery in eager (synchronous) mode.
+This uses SQLite and no `DATABASE_URL` is set. **Note:** Celery tasks try to connect to a real Redis broker when `.delay()` is called — if you're not running Redis locally (`docker run -p 6379:6379 redis:7` is enough) and don't have a separate `celery -A datalens worker -l info` running, submitting the column mapping will fail the analysis with a clear "couldn't reach Redis/Celery" error instead of computing it (this is handled gracefully, not a crash). This doesn't affect the test suite — tests run Celery in eager (synchronous) mode.
 
 Visit `http://127.0.0.1:8000`, create an account, and try it out with `sample_data/orders.csv`.
 

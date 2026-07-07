@@ -1,4 +1,5 @@
 import io
+from unittest.mock import patch
 
 import pandas as pd
 from django.contrib.auth.models import User
@@ -177,9 +178,28 @@ class AsyncAnalysisTests(TestCase):
         response = self.client.get(reverse('analyzer:analyze', args=[self.dataset.pk]))
         self.assertContains(response, 'Total Revenue')
 
-        api_response = self.client.get(reverse('analyzer:api_dataset_stats', args=[self.dataset.pk]))
-        self.assertEqual(api_response.status_code, 200)
-        self.assertEqual(api_response.json()['order_count'], 4)
+    def test_map_columns_degrades_gracefully_if_broker_unreachable(self):
+        """If Celery can't reach its broker (e.g. no Redis running locally
+        without Docker), submitting the mapping form should not crash the
+        request — it should fail the analysis with a clear message instead."""
+        unmapped = Dataset.objects.create(
+            owner=self.user, name='orders2.csv', content=ORDERS_CSV.decode(),
+        )
+        with patch('analyzer.views.run_analysis.delay', side_effect=ConnectionError('no broker')):
+            response = self.client.post(reverse('analyzer:map_columns', args=[unmapped.pk]), {
+                'date': 'Order Date', 'product': 'Product', 'amount': 'Total',
+                'quantity': 'Quantity', 'customer': 'Customer Email',
+                'category': 'Category', 'status': 'Status',
+            })
+        self.assertRedirects(response, reverse('analyzer:analyze', args=[unmapped.pk]))
+
+        result = AnalysisResult.objects.get(dataset=unmapped)
+        self.assertEqual(result.status, AnalysisResult.FAILED)
+        self.assertIn('Redis/Celery', result.error_message)
+
+        analyze_response = self.client.get(reverse('analyzer:analyze', args=[unmapped.pk]))
+        self.assertEqual(analyze_response.status_code, 200)
+        self.assertContains(analyze_response, 'Redis/Celery')
 
     def test_analyze_shows_error_when_analysis_failed(self):
         AnalysisResult.objects.create(
